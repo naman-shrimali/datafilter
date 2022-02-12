@@ -1,18 +1,27 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+<div class="home-page">
+  <v-flex color="primary">
+      <h1>Click to explore Data Sheet....</h1>
+        <v-btn id="start-btn" @click= "$router.push({name: 'datafilter'})">Click Me</v-btn>
+  </v-flex>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
-export default {
-  name: "Home",
-  components: {
-    HelloWorld,
-  },
-};
+  export default {
+        name: 'Home',  
+  }
 </script>
+
+<style>
+.home-page {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  height: 100vh;
+  
+}
+#start-btn {
+  background-color:#d4a373;
+}
+</style>
