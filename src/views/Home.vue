@@ -22,6 +22,6 @@
   
 }
 #start-btn {
-  background-color:#d4a373;
+  background-color:#f2e863;
 }
 </style>
