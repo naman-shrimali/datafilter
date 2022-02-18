@@ -16,9 +16,7 @@
       :headers="headers"
       :items= "data_Details"
       items-per-page="10"
-      item-key="pat_ID" 
-      :search="search"
-      :custom-filter="filterOnlyCapsText"            
+      item-key="pat_ID"        
     >
       <template v-slot:top >
           <v-layout row wrap height="5px" mt-4 mb-2>
@@ -45,7 +43,7 @@
               outlined
               append-icon="mdi-magnify"
               label="Part CT"
-              v-model="search"
+              v-model="part_CT"
               single-line
               hide-details
             ></v-text-field>
@@ -93,7 +91,6 @@
               color = filters.color6
               outlined  
               append-icon="mdi-magnify"
-              :items="authors"
               label="ORR"
               v-model="orr"
               single-line
@@ -171,11 +168,11 @@
           <v-flex xs3 pr-2 pl-2>
             <v-row >
               <label for="start">From: </label>
-              <input type="date" id="start" v-model="ctDate_fromDate">
+              <input type="date" id="start" v-model="ctDate_fromDate" >
             </v-row>
             <v-row>
               <label for="end">To: </label>
-              <input type="date" id="end" v-model="ctDate_toDate">
+              <input type="date" id="end" v-model="ctDate_toDate" >
             </v-row>
           </v-flex>
         </v-layout>
@@ -196,7 +193,7 @@ export default {
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvQmAr2pxspRHodWbYo6_usmDZ5wXpERkaX35XtFdsgM_b54vzRhUJhp5yQ5bwWGsBJq0lMPVy8Wet/pub?gid=0&single=true&output=csv",
             data_Details:[],
             search: '',
-            part_CT:['A', 'C', 'D', 'E' , 'F' , 'G' , 'H' , 'DA' ],
+            part_CT:'',
             dose_CT:'',
             tumor:'',
             borAS:'',
@@ -219,8 +216,6 @@ export default {
               color7:'#ca6702',
               color8:'#ae2012',
             },
-            
-            authors: ['N', 'NE', 'NA'],
             headers: [
         {
           text: 'Pat ID',
@@ -229,6 +224,11 @@ export default {
           value: 'pat_ID',
         },
         { text: 'Part (CT)', value: 'part_CT'
+        ,filter: value => {
+             if (!this.part_CT) return true
+
+              return value === this.part_CT.toLocaleUpperCase()
+            }, 
             },
         { text: 'Dose (CT)', value: 'dose_CT'
         ,filter: value => {
@@ -295,16 +295,26 @@ export default {
             },
         { text: 'CT date', value: 'ctDate'
         ,filter: value => {
-              if (!this.ctDate_fromDate && !this.ctDate_toDate) return true
-              if (this.ctDate_fromDate && !this.ctDate_toDate) return value >= this.localizeDate(this.ctDate_fromDate)
-              if (!this.ctDate_fromDate && this.ctDate_toDate) return value <= this.localizeDate(this.ctDate_toDate)
-              if (value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate))
-              {
-              console.log(this.localizeDate(this.ctDate_fromDate))
-              console.log(this.localizeDate(this.ctDate_toDate))
+              //if (!this.ctDate_fromDate && !this.ctDate_toDate) 
               console.log(value);
-              return value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate)
+              if(value != ''){
+              var convertedDate_local = this.localizeDate(value);
+              console.log(convertedDate_local);
+              var convertedDate_from = new Date(this.ctDate_fromDate);
+              if(!convertedDate_from) return true
+              return convertedDate_local >= convertedDate_from;
               }
+              if(value == '')
+              return true;
+              // if (this.ctDate_fromDate && !this.ctDate_toDate) return value >= this.localizeDate(this.ctDate_fromDate)
+              // if (!this.ctDate_fromDate && this.ctDate_toDate) return value <= this.localizeDate(this.ctDate_toDate)
+              // if (value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate))
+              // {
+              // console.log(this.localizeDate(this.ctDate_fromDate))
+              // console.log(this.localizeDate(this.ctDate_toDate))
+              // console.log(value);
+              // return value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate)
+              // }
               },  
               },
       ],
@@ -328,28 +338,48 @@ export default {
         });
       },
       // eslint-disable-next-line no-unused-vars
-      filterOnlyCapsText (value, search, item) {
-        return value != null &&
-          search != null &&
-          typeof value === 'string' &&
-          value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
-      },
+      // filterOnlyCapsText (value, search, item) {
+      //   return value != null &&
+      //     search != null &&
+      //     typeof value === 'string' &&
+      //     value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
+      // },
       localizeDate(date) {
-        if (!date || !date.includes('-')) return date
-        var datefilter;
-        const [yyyy, mm, dd] = date.split('-')
-        datefilter = (`${dd}/${mm}/${yyyy}`)
-        var convertedDate = datefilter.split('');
-        // console.log(datefilter);
-        // console.log(convertedDate);
-        var newdate = [];
-        let index=0;
-        for (index = 0; index < convertedDate.length-4; index++) {
-          newdate[index]=convertedDate[index];
+        var [dd,mm,yy] = date.split('/');
+        //console.log(yy);
+        if(yy){
+        var YY = yy.split('');
+        //console.log(YY);
+        YY.splice(0, 0, "2");
+        YY.splice(1, 0, "0");
+        yy = YY.join('');
+        var d1 = (`${yy}/${mm}/${dd}`);
+        var D1 = new Date(d1);
+        return D1;
         }
-        newdate[index]=convertedDate[index+2];
-        newdate[index+1]=convertedDate[index+3];
-        return newdate.join("");
+        return date;
+        // console.log(d1);
+        // console.log(d2);
+        // console.log(D1 <= D2);   // prints false (wrong!) 
+        // console.log(D1 === D2);  // prints false (wrong!)
+        // console.log(D1 != D2);   // prints true  (wrong!)
+        // console.log(D1 !== D2);  // prints true  (wrong!)
+        // console.log(D1.getTime() === D2.getTime()); // prints true (correct)
+        // if (!date || !date.includes('-')) return date
+        // var datefilter;
+        // const [yyyy, mm, dd] = date.split('-')
+        // datefilter = (`${dd}/${mm}/${yyyy}`)
+        // var convertedDate = datefilter.split('');
+        // // console.log(datefilter);
+        // // console.log(convertedDate);
+        // var newdate = [];
+        // let index=0;
+        // for (index = 0; index < convertedDate.length-4; index++) {
+        //   newdate[index]=convertedDate[index];
+        // }
+        // newdate[index]=convertedDate[index+2];
+        // newdate[index+1]=convertedDate[index+3];
+        // return newdate.join("");
       },
       // filterDate() {
       //     if (this.borData !== undefined) {
@@ -360,7 +390,7 @@ export default {
 }
 </script>
 
-/*<style>
+<style>
 #app {
   height: 100vh;
   
@@ -384,4 +414,4 @@ th {
 td {
   border: 1px solid black;
 }
-</style>*/
+</style>
