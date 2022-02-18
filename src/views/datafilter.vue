@@ -15,17 +15,19 @@
       dense
       :headers="headers"
       :items= "data_Details"
-      items-per-page="10"
-      item-key="pat_ID"        
+      :rows-per-page-items="rowsPerPage" 
+      item-key="pat_ID"   
+      :pagination.sync="pagination"     
     >
       <template v-slot:top >
           <v-layout row wrap height="5px" mt-4 mb-2>
-          <!-- 1 -->
+          <!-- Filter Button -->
           <v-flex xs1 pr-2 pl-2>
             <v-btn
               class="ma-2"
               color="primary"
               dark
+              v-on:click="isHidden = !isHidden"
             >
               Filters
               <v-icon
@@ -36,8 +38,8 @@
               </v-icon>
             </v-btn>
           </v-flex>
-          <!-- 2 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 1 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color2
               outlined
@@ -49,8 +51,8 @@
             ></v-text-field>
 
           </v-flex>
-          <!-- 3 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 2 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color3
               outlined
@@ -61,8 +63,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 4 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 3 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color4
               outlined 
@@ -73,8 +75,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 5 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 4 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color5
               outlined
@@ -85,8 +87,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 6 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 5 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color6
               outlined  
@@ -97,8 +99,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 7 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 6 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color7
               outlined  
@@ -109,8 +111,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 8 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 7 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color8
               outlined  
@@ -121,8 +123,8 @@
               hide-details
               ></v-text-field>
           </v-flex>
-          <!-- 9 -->
-          <v-flex xs1 pr-2 pl-2>
+          <!-- 8 -->
+          <v-flex xs1 pr-2 pl-2 v-if="!isHidden">
               <v-text-field
               color = filters.color1
               outlined  
@@ -133,45 +135,14 @@
               hide-details 
               ></v-text-field>
           </v-flex>
-          <!-- 10 -->
-          <!-- <v-flex xs0 pr-2 pl-2>
-            <v-menu>
-                  <v-text-field
-                         color: success
-                         label="BOR Data"
-                         v-model="borData"
-                         outlined 
-                  ></v-text-field>
-                  <v-date-picker
-                  ></v-date-picker>
-            </v-menu>
-          </v-flex>
-           11 -->
-          <!-- <v-flex xs0 pr-2 pl-2>
-
-
-              <v-menu
-
-              >
-                  <v-text-field
-                          label="TS Data"
-                          v-model="tsData"
-                  ></v-text-field>
-                  <v-date-picker
-
-                  ></v-date-picker>
-
-              </v-menu>
-
-          </v-flex> -->
-          <!-- 12 -->
-          <v-flex xs3 pr-2 pl-2>
+          <!-- 9 -->
+          <v-flex xs3 pr-2 pl-4 v-if="!isHidden">
             <v-row >
-              <label for="start">From: </label>
+              <label for="start">CT Date From : </label>
               <input type="date" id="start" v-model="ctDate_fromDate" >
             </v-row>
             <v-row>
-              <label for="end">To: </label>
+              <label for="end">CT Date To : </label>
               <input type="date" id="end" v-model="ctDate_toDate" >
             </v-row>
           </v-flex>
@@ -192,7 +163,7 @@ export default {
             data_Desc_Url :
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvQmAr2pxspRHodWbYo6_usmDZ5wXpERkaX35XtFdsgM_b54vzRhUJhp5yQ5bwWGsBJq0lMPVy8Wet/pub?gid=0&single=true&output=csv",
             data_Details:[],
-            search: '',
+            isHidden: false,
             part_CT:'',
             dose_CT:'',
             tumor:'',
@@ -203,7 +174,6 @@ export default {
             hpvStatus:'',
             ctDate_fromDate:'',
             ctDate_toDate:'',
-            menu: false,
             tsData:'',
             borData:'',
             filters: {
@@ -295,31 +265,23 @@ export default {
             },
         { text: 'CT date', value: 'ctDate'
         ,filter: value => {
-              //if (!this.ctDate_fromDate && !this.ctDate_toDate) 
               console.log(value);
               if(value != ''){
               var convertedDate_local = this.localizeDate(value);
-              console.log(convertedDate_local);
               var convertedDate_from = new Date(this.ctDate_fromDate);
-              if(!convertedDate_from) return true
-              return convertedDate_local >= convertedDate_from;
+              var convertedDate_to = new Date(this.ctDate_toDate);
+              if(!this.ctDate_fromDate && !this.ctDate_toDate) return true // If 'From' & 'To' Dates are not Available
+              if(this.ctDate_fromDate && !this.ctDate_toDate){  return convertedDate_local >= convertedDate_from; } //If 'To' Date is not Available
+              if(!this.ctDate_fromDate && this.ctDate_toDate){  return convertedDate_local <= convertedDate_to; }  //If 'From' Date is not Available 
+              if(this.ctDate_fromDate && this.ctDate_toDate) {  return convertedDate_local >= convertedDate_from && convertedDate_local <= convertedDate_to; }  //If 'From' && 'To' Both Dates are Available 
               }
-              if(value == '')
               return true;
-              // if (this.ctDate_fromDate && !this.ctDate_toDate) return value >= this.localizeDate(this.ctDate_fromDate)
-              // if (!this.ctDate_fromDate && this.ctDate_toDate) return value <= this.localizeDate(this.ctDate_toDate)
-              // if (value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate))
-              // {
-              // console.log(this.localizeDate(this.ctDate_fromDate))
-              // console.log(this.localizeDate(this.ctDate_toDate))
-              // console.log(value);
-              // return value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate)
-              // }
               },  
               },
       ],
         }
   },
+  // method to indicate the user the change in Screen Size 
     mounted() {
       window.onresize = function() {
         console.log("changed device dimensions")
@@ -327,7 +289,11 @@ export default {
     }
       this.fetchdata_Details();
     },
+    pagination: {
+    rowsPerPage: 10,
+    },
     methods: {
+      // Function to Fetch Details from Google Sheets Link Stored in variable data_Desc_Url 
       fetchdata_Details(){
          this.$papa.parse(this.data_Desc_Url, {
           download: true,
@@ -337,19 +303,11 @@ export default {
           }
         });
       },
-      // eslint-disable-next-line no-unused-vars
-      // filterOnlyCapsText (value, search, item) {
-      //   return value != null &&
-      //     search != null &&
-      //     typeof value === 'string' &&
-      //     value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
-      // },
+      // Function To convert the dd/mm/yy to yyyy/mm/dd format { 01/01/22 to 2022/01/01 }
       localizeDate(date) {
         var [dd,mm,yy] = date.split('/');
-        //console.log(yy);
         if(yy){
         var YY = yy.split('');
-        //console.log(YY);
         YY.splice(0, 0, "2");
         YY.splice(1, 0, "0");
         yy = YY.join('');
@@ -358,34 +316,7 @@ export default {
         return D1;
         }
         return date;
-        // console.log(d1);
-        // console.log(d2);
-        // console.log(D1 <= D2);   // prints false (wrong!) 
-        // console.log(D1 === D2);  // prints false (wrong!)
-        // console.log(D1 != D2);   // prints true  (wrong!)
-        // console.log(D1 !== D2);  // prints true  (wrong!)
-        // console.log(D1.getTime() === D2.getTime()); // prints true (correct)
-        // if (!date || !date.includes('-')) return date
-        // var datefilter;
-        // const [yyyy, mm, dd] = date.split('-')
-        // datefilter = (`${dd}/${mm}/${yyyy}`)
-        // var convertedDate = datefilter.split('');
-        // // console.log(datefilter);
-        // // console.log(convertedDate);
-        // var newdate = [];
-        // let index=0;
-        // for (index = 0; index < convertedDate.length-4; index++) {
-        //   newdate[index]=convertedDate[index];
-        // }
-        // newdate[index]=convertedDate[index+2];
-        // newdate[index+1]=convertedDate[index+3];
-        // return newdate.join("");
       },
-      // filterDate() {
-      //     if (this.borData !== undefined) {
-      //         this.items = this.items.filter((item) => item.borData == this.borData)
-      //     }
-      // },
     }
 }
 </script>
