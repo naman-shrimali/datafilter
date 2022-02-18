@@ -1,179 +1,187 @@
 <template>
-  <div id="app" v-if="data_Details && data_Details.length" >
-   <v-banner
-    color="primary"
-    outlined
-    rounded
-    tile
-  >
-  <h2 align="right" class="banner">Total Number of Entries : {{data_Details.length}}</h2>
-  </v-banner>
+  <div id="app" v-if="data_Details && data_Details.length" class="mb-4 v-dialog__ title content v-dialog__ title content--active mainDiv" >
+        <v-banner
+          color="primary"
+          ma-0 pa-0
+          outlined
+          rounded
+          tile
+        >
+          <h2 align="right" class="banner mt-2">Total Number of Entries : {{data_Details.length}}</h2>
+        </v-banner>
   
-
-  <v-data-table
-    dense
-    :headers="headers"
-    :items= "data_Details"
-    items-per-page="10"
-    item-key="pat_ID" 
-    :search="search"
-    :custom-filter="filterOnlyCapsText"            
-  >
-    <template v-slot:top>
-        <v-layout row wrap height="5px">
-        <!-- 1 -->
-        <v-flex xs1>
-            
-        </v-flex>
-        <!-- 2 -->
-        <v-flex xs1>
-            <v-text-field
-            color="success"
-            outlined
-            append-icon="mdi-magnify"
-            label="Part CT"
-            v-model="search"
-            single-line
-            hide-details
-          ></v-text-field>
-      
-        </v-flex>
-        <!-- 3 -->
-        <v-flex xs1>
-            <v-text-field
-                outlined
-            append-icon="mdi-magnify"
-            label="Dose CT"
-            v-model="dose_CT"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 4 -->
-        <v-flex xs1>
-            <v-text-field
-                 color: success
-                 outlined 
-            append-icon="mdi-magnify"
-            label="Tumor Type"
-            v-model="tumor"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 5 -->
-        <v-flex xs1>
-            <v-text-field
-                   outlined
-            append-icon="mdi-magnify"
-            label="BOR as"
-            v-model="borAS"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 6 -->
-        <v-flex xs1>
-            <v-text-field
-               color: success  
-               outlined  
-            :items="authors"
-            label="ORR"
-            v-model="orr"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 7 -->
-        <v-flex xs1>
-            <v-text-field
-                outlined  
-            label="CB16wks"
-            v-model="cbwks"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 8 -->
-        <v-flex xs1>
-            <v-text-field
-               color: success
-               outlined  
-            label="PDL1 IC"
-            v-model="pdlIC"
-            single-line
-            hide-details
-            ></v-text-field>
-        </v-flex>
-        <!-- 9 -->
-        <v-flex xs1>
-            <v-text-field
-                outlined  
-            label="HPV Status"
-            v-model="hpvStatus"
-            single-line
-            hide-details 
-            ></v-text-field>
-        </v-flex>
-        <!-- 10 -->
-        <v-flex xs1 >
-          <v-col class="pa-0 ma-0">
-            <v-text-field
-               color: success  
-               outlined  
-               label="BOR Data From"
-               v-model="borData_fromDate"
-               single-line
-               hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col class="pa-0 ma-0">
-            <v-text-field
-               color: success  
-               outlined  
-               label="BOR Data To"
-               v-model="borData_toDate"
-               single-line
-               hide-details
-            ></v-text-field>
-          </v-col>
-        </v-flex>
-        <!-- 11 -->
-        <v-flex xs1>
-
-
-            <v-menu
-                    
+  <v-flex>
+    <v-data-table
+      dense
+      :headers="headers"
+      :items= "data_Details"
+      items-per-page="10"
+      item-key="pat_ID" 
+      :search="search"
+      :custom-filter="filterOnlyCapsText"            
+    >
+      <template v-slot:top >
+          <v-layout row wrap height="5px" mt-4 mb-2>
+          <!-- 1 -->
+          <v-flex xs1 pr-2 pl-2>
+            <v-btn
+              class="ma-2"
+              color="primary"
+              dark
             >
-                <v-text-field
-                        label="TS Data"
-                        v-model="tsData"
-                ></v-text-field>
-                <v-date-picker
-                        
-                ></v-date-picker>
+              Filters
+              <v-icon
+                dark
+                right
+              >
+                mdi-filter
+              </v-icon>
+            </v-btn>
+          </v-flex>
+          <!-- 2 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color2
+              outlined
+              append-icon="mdi-magnify"
+              label="Part CT"
+              v-model="search"
+              single-line
+              hide-details
+            ></v-text-field>
 
+          </v-flex>
+          <!-- 3 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color3
+              outlined
+              append-icon="mdi-magnify"
+              label="Dose CT"
+              v-model="dose_CT"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 4 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color4
+              outlined 
+              append-icon="mdi-magnify"
+              label="Tumor Type"
+              v-model="tumor"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 5 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color5
+              outlined
+              append-icon="mdi-magnify"
+              label="BOR as"
+              v-model="borAS"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 6 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color6
+              outlined  
+              append-icon="mdi-magnify"
+              :items="authors"
+              label="ORR"
+              v-model="orr"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 7 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color7
+              outlined  
+              append-icon="mdi-magnify"
+              label="CB16wks"
+              v-model="cbwks"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 8 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color8
+              outlined  
+              append-icon="mdi-magnify"
+              label="PDL1 IC"
+              v-model="pdlIC"
+              single-line
+              hide-details
+              ></v-text-field>
+          </v-flex>
+          <!-- 9 -->
+          <v-flex xs1 pr-2 pl-2>
+              <v-text-field
+              color = filters.color1
+              outlined  
+              append-icon="mdi-magnify"
+              label="HPV Status"
+              v-model="hpvStatus"
+              single-line
+              hide-details 
+              ></v-text-field>
+          </v-flex>
+          <!-- 10 -->
+          <!-- <v-flex xs0 pr-2 pl-2>
+            <v-menu>
+                  <v-text-field
+                         color: success
+                         label="BOR Data"
+                         v-model="borData"
+                         outlined 
+                  ></v-text-field>
+                  <v-date-picker
+                  ></v-date-picker>
             </v-menu>
+          </v-flex>
+           11 -->
+          <!-- <v-flex xs0 pr-2 pl-2>
 
-        </v-flex>
-        <!-- 12 -->
-        <v-flex xs1>
-          
-          <v-menu>
-                <v-text-field
-                       color: success
-                       label="CT Date"
-                       v-model="ctDate"
-                       outlined 
-                ></v-text-field>
-                <v-date-picker
-                ></v-date-picker>
-          </v-menu>
-        </v-flex>
-      </v-layout>
-      </template>
-  </v-data-table>
- 
+
+              <v-menu
+
+              >
+                  <v-text-field
+                          label="TS Data"
+                          v-model="tsData"
+                  ></v-text-field>
+                  <v-date-picker
+
+                  ></v-date-picker>
+
+              </v-menu>
+
+          </v-flex> -->
+          <!-- 12 -->
+          <v-flex xs3 pr-2 pl-2>
+            <v-row >
+              <label for="start">From: </label>
+              <input type="date" id="start" v-model="ctDate_fromDate">
+            </v-row>
+            <v-row>
+              <label for="end">To: </label>
+              <input type="date" id="end" v-model="ctDate_toDate">
+            </v-row>
+          </v-flex>
+        </v-layout>
+        </template>
+    </v-data-table>
+  </v-flex>
   </div>
 </template>
 
@@ -196,11 +204,21 @@ export default {
             cbwks:'',
             pdlIC:'',
             hpvStatus:'',
-            borData_fromDate:'',
-            borData_toDate:'',
+            ctDate_fromDate:'',
+            ctDate_toDate:'',
             menu: false,
             tsData:'',
-            ctDate:'',
+            borData:'',
+            filters: {
+              color1:'#001219',
+              color2:'#005f73',
+              color3:'#0a9396',
+              color4:'#94d2bd',
+              color5:'#e9d8a6',
+              color6:'#ee9b00',
+              color7:'#ca6702',
+              color8:'#ae2012',
+            },
             
             authors: ['N', 'NE', 'NA'],
             headers: [
@@ -262,9 +280,10 @@ export default {
             }, 
             },
         { text: 'BOR datacutoff date', value: 'borData'
-        ,filter: value => {
-              if (!this.borData_fromDate&&!this.borData_toDate) return true
-              return value >= this.borData_fromDate.getTime() && value <= this.borData_toDate.getTime()
+          ,filter: value => {
+              if (!this.borData) return true
+
+              return value === this.borData
             }, 
             },
         { text: 'TS datacut for CB call', value: 'tsData'
@@ -276,10 +295,17 @@ export default {
             },
         { text: 'CT date', value: 'ctDate'
         ,filter: value => {
-              if (!this.ctDate) return true
-
-              return value === this.ctDate
-            }, 
+              if (!this.ctDate_fromDate && !this.ctDate_toDate) return true
+              if (this.ctDate_fromDate && !this.ctDate_toDate) return value >= this.localizeDate(this.ctDate_fromDate)
+              if (!this.ctDate_fromDate && this.ctDate_toDate) return value <= this.localizeDate(this.ctDate_toDate)
+              if (value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate))
+              {
+              console.log(this.localizeDate(this.ctDate_fromDate))
+              console.log(this.localizeDate(this.ctDate_toDate))
+              console.log(value);
+              return value >= this.localizeDate(this.ctDate_fromDate) || value <= this.localizeDate(this.ctDate_toDate)
+              }
+              },  
               },
       ],
         }
@@ -307,6 +333,23 @@ export default {
           search != null &&
           typeof value === 'string' &&
           value.toString().toLocaleUpperCase().indexOf(search.toLocaleUpperCase()) !== -1
+      },
+      localizeDate(date) {
+        if (!date || !date.includes('-')) return date
+        var datefilter;
+        const [yyyy, mm, dd] = date.split('-')
+        datefilter = (`${dd}/${mm}/${yyyy}`)
+        var convertedDate = datefilter.split('');
+        // console.log(datefilter);
+        // console.log(convertedDate);
+        var newdate = [];
+        let index=0;
+        for (index = 0; index < convertedDate.length-4; index++) {
+          newdate[index]=convertedDate[index];
+        }
+        newdate[index]=convertedDate[index+2];
+        newdate[index+1]=convertedDate[index+3];
+        return newdate.join("");
       },
       // filterDate() {
       //     if (this.borData !== undefined) {
