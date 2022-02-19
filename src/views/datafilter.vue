@@ -15,9 +15,9 @@
       dense
       :headers="headers"
       :items= "data_Details"
-      :rows-per-page-items="rowsPerPage" 
+      footer-props.items-per-page-options="options.rowsPerPage" 
       item-key="pat_ID"   
-      :pagination.sync="pagination"     
+      :options.sync="options"     
     >
       <template v-slot:top >
           <v-layout row wrap height="5px" mt-4 mb-2>
@@ -139,11 +139,11 @@
           <v-flex xs3 pr-2 pl-4 v-if="!isHidden">
             <v-row >
               <label for="start">CT Date From : </label>
-              <input type="date" id="start" v-model="ctDate_fromDate" >
+              <input type="date" id="start" max="ctDate_toDate" v-model="ctDate_fromDate" >
             </v-row>
             <v-row>
               <label for="end">CT Date To : </label>
-              <input type="date" id="end" v-model="ctDate_toDate" >
+              <input type="date" id="end" min="ctDate_fromDate" v-model="ctDate_toDate" >
             </v-row>
           </v-flex>
         </v-layout>
@@ -185,6 +185,9 @@ export default {
               color6:'#ee9b00',
               color7:'#ca6702',
               color8:'#ae2012',
+            },
+            options: {
+            rowsPerPage: 10,
             },
             headers: [
         {
@@ -265,15 +268,14 @@ export default {
             },
         { text: 'CT date', value: 'ctDate'
         ,filter: value => {
-              console.log(value);
               if(value != ''){
               var convertedDate_local = this.localizeDate(value);
               var convertedDate_from = new Date(this.ctDate_fromDate);
               var convertedDate_to = new Date(this.ctDate_toDate);
-              if(!this.ctDate_fromDate && !this.ctDate_toDate) return true // If 'From' & 'To' Dates are not Available
-              if(this.ctDate_fromDate && !this.ctDate_toDate){  return convertedDate_local >= convertedDate_from; } //If 'To' Date is not Available
-              if(!this.ctDate_fromDate && this.ctDate_toDate){  return convertedDate_local <= convertedDate_to; }  //If 'From' Date is not Available 
-              if(this.ctDate_fromDate && this.ctDate_toDate) {  return convertedDate_local >= convertedDate_from && convertedDate_local <= convertedDate_to; }  //If 'From' && 'To' Both Dates are Available 
+              if(!this.ctDate_fromDate && !this.ctDate_toDate){  return true }// If 'From' & 'To' Dates are not Available
+              if(this.ctDate_fromDate && !this.ctDate_toDate){  return convertedDate_local.getTime()+19800000 >= convertedDate_from.getTime(); } //If 'To' Date is not Available
+              if(!this.ctDate_fromDate && this.ctDate_toDate){ console.log(3); return convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' Date is not Available 
+              if(this.ctDate_fromDate && this.ctDate_toDate) { console.log(4); return convertedDate_local.getTime()+19800000 >= convertedDate_from.getTime() && convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' && 'To' Both Dates are Available 
               }
               return true;
               },  
@@ -288,9 +290,6 @@ export default {
       document.body.height = window.innerHeight;
     }
       this.fetchdata_Details();
-    },
-    pagination: {
-    rowsPerPage: 10,
     },
     methods: {
       // Function to Fetch Details from Google Sheets Link Stored in variable data_Desc_Url 
