@@ -274,8 +274,8 @@ export default {
               var convertedDate_to = new Date(this.ctDate_toDate);
               if(!this.ctDate_fromDate && !this.ctDate_toDate){  return true }// If 'From' & 'To' Dates are not Available
               if(this.ctDate_fromDate && !this.ctDate_toDate){  return convertedDate_local.getTime()+19800000 >= convertedDate_from.getTime(); } //If 'To' Date is not Available
-              if(!this.ctDate_fromDate && this.ctDate_toDate){ console.log(3); return convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' Date is not Available 
-              if(this.ctDate_fromDate && this.ctDate_toDate) { console.log(4); return convertedDate_local.getTime()+19800000 >= convertedDate_from.getTime() && convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' && 'To' Both Dates are Available 
+              if(!this.ctDate_fromDate && this.ctDate_toDate){  return convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' Date is not Available 
+              if(this.ctDate_fromDate && this.ctDate_toDate) {  return convertedDate_local.getTime()+19800000 >= convertedDate_from.getTime() && convertedDate_local.getTime()+19800000 <= convertedDate_to.getTime(); }  //If 'From' && 'To' Both Dates are Available 
               }
               return true;
               },  
