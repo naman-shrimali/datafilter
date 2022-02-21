@@ -253,18 +253,8 @@ export default {
             }, 
             },
         { text: 'BOR datacutoff date', value: 'borData'
-          ,filter: value => {
-              if (!this.borData) return true
-
-              return value === this.borData
-            }, 
             },
-        { text: 'TS datacut for CB call', value: 'tsData'
-        ,filter: value => {
-              if (!this.tsData) return true
-
-              return value === this.tsData
-            }, 
+        { text: 'TS datacut for CB call', value: 'tsData' 
             },
         { text: 'CT date', value: 'ctDate'
         ,filter: value => {
