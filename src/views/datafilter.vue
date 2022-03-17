@@ -150,16 +150,151 @@
         </template>
     </v-data-table>
   </v-flex>
+  <v-flex>
+     <v-row>
+      <v-col xs1 pl-2 pr-2>
+      </v-col>
+      <h2>Charts According to Part_CT : </h2>
+      <v-col xs1 pl-2 pr-2>
+        <v-row>
+        <v-btn
+              class="ma-2"
+              color="success"
+              dark
+              small
+              @click="overlay1 = !overlay1"
+            >
+              <v-icon
+                dark
+              >
+                mdi-chart-bar
+              </v-icon>
+            </v-btn>
+        <v-btn
+              class="ma-2"
+              color="alert"
+              dark
+              small
+              @click="overlay2 = !overlay2"
+            >
+              
+              <v-icon
+                dark
+              >
+                mdi-chart-pie
+              </v-icon>
+            </v-btn>
+        </v-row> 
+      </v-col>
+      <v-spacer></v-spacer>
+
+      <!-- <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col>
+      <v-col xs1 pl-2 pr-2>
+        Naman 
+      </v-col> -->
+    </v-row>
+  </v-flex>
+  <v-flex>
+    <v-row>
+      <v-overlay
+          :absolute="absolute"
+          :value="overlay1"
+          opacity="1"
+        >
+        <v-btn
+          fab
+          small
+          color="warning"
+          @click="overlay1 = false"
+        >
+          <v-icon
+                dark
+              >
+                mdi-close
+              </v-icon>
+        </v-btn>
+  <barspartCT 
+    class="chart"
+    :data="this.data_Details.map((d) => d.part_CT)"
+    :margin-left="80"
+    :margin-top="80"
+    :margin-bottom="80"
+    :margin-right="80"
+    :tick-count="5"
+    :bar-padding="0.5"
+    />
+    </v-overlay>
+    </v-row>
+  </v-flex>
+  <v-flex>
+    <v-row>
+      <v-overlay
+          :absolute="absolute"
+          :value="overlay2"
+          opacity="1"
+        >
+        <v-btn
+          fab
+          small
+          color="warning"
+          @click="overlay2 = false"
+        >
+          <v-icon
+                dark
+              >
+                mdi-close
+              </v-icon>
+        </v-btn>
+  <piepartCT
+  :data="this.data_Details.map((d) => d.part_CT)"
+  />
+    </v-overlay>
+    </v-row>
+  </v-flex>
   </div>
 </template>
 
 <script>
+import barspartCT from "./barcharts/barspartCT.vue";
+import piepartCT from "./barcharts/piepartCT.vue";
 
 export default {
   name: 'datafilter',
-  
+  components: {
+    barspartCT,
+    piepartCT,
+  },
   data () {
     return {
+            absolute: true,
+            overlay1: false,
+            overlay2: false,
             data_Desc_Url :
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvQmAr2pxspRHodWbYo6_usmDZ5wXpERkaX35XtFdsgM_b54vzRhUJhp5yQ5bwWGsBJq0lMPVy8Wet/pub?gid=0&single=true&output=csv",
             data_Details:[],
@@ -281,6 +416,10 @@ export default {
     }
       this.fetchdata_Details();
     },
+    updated() {
+        console.log(this.data_Details);
+      console.log(this.countUnique(this.data_Details.map((d) => d.part_CT)));
+    },
     methods: {
       // Function to Fetch Details from Google Sheets Link Stored in variable data_Desc_Url 
       fetchdata_Details(){
@@ -306,6 +445,10 @@ export default {
         }
         return date;
       },
+      //function to count unique elements
+      countUnique(iterable) {
+        return new Set(iterable);
+      },
     }
 }
 </script>
@@ -314,6 +457,10 @@ export default {
 #app {
   height: 100vh;
   
+}
+.chart {
+    margin: 120px auto;
+    display: block;
 }
 .banner {
   color: lightgray;
