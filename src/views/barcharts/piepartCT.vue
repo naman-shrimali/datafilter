@@ -6,7 +6,7 @@
           v-for="(color_name, index) in colors"
           :key="index"
           >
-          <v-col><h5 >"{{ color_name }}"</h5></v-col>
+          <v-col><h5 >"{{ index }}"</h5></v-col>
           <v-col><v-btn color = primary ></v-btn></v-col>
           </v-row>
       </v-col>
@@ -36,7 +36,7 @@ export default {
             colors: {
                 A : '#98abc5',
                 C : '#8a89a6',
-                d : '#7b6888',
+                D : '#7b6888',
                 E : '#6b486b',
                 F : '#a05d56',
                 G : '#001219',
